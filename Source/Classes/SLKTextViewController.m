@@ -139,19 +139,27 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     if (self = [super initWithCoder:decoder])
     {
-        UITableViewStyle tableViewStyle = [[self class] tableViewStyleForCoder:decoder];
-        UICollectionViewLayout *collectionViewLayout = [[self class] collectionViewLayoutForCoder:decoder];
-        
-        if ([collectionViewLayout isKindOfClass:[UICollectionViewLayout class]]) {
-            self.scrollViewProxy = [self collectionViewWithLayout:collectionViewLayout];
-        }
-        else {
-            self.scrollViewProxy = [self tableViewWithStyle:tableViewStyle];
-        }
-        
-        [self slk_commonInit];
+
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    UITableViewStyle tableViewStyle = [[self class] tableViewStyleForCoder:nil];
+    UICollectionViewLayout *collectionViewLayout = [[self class] collectionViewLayoutForCoder:nil];
+    
+    if ([collectionViewLayout isKindOfClass:[UICollectionViewLayout class]]) {
+        self.scrollViewProxy = [self collectionViewWithLayout:collectionViewLayout];
+    }
+    else {
+        self.scrollViewProxy = _tableView = [self tableViewWithStyle:tableViewStyle];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+    }
+    
+    [self slk_commonInit];
 }
 
 - (void)slk_commonInit
