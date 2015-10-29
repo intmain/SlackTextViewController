@@ -181,12 +181,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     [super viewDidLoad];
     
-    [self.view addSubview:self.scrollViewProxy];
+//    [self.view addSubview:self.scrollViewProxy];
+    
+    [self.view insertSubview:self.scrollViewProxy atIndex:0];
     [self.view addSubview:self.autoCompletionView];
     [self.view addSubview:self.typingIndicatorProxyView];
     [self.view addSubview:self.textInputbar];
-    
+
     [self slk_setupViewConstraints];
+    self.scrollViewProxy.contentInset = UIEdgeInsetsZero;
+    self.scrollViewProxy.scrollIndicatorInsets = UIEdgeInsetsZero;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -203,6 +207,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     // Helps laying out subviews with recently added constraints.
     [self.view layoutIfNeeded];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -539,6 +544,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (BOOL)slk_updateKeyboardStatus:(SLKKeyboardStatus)status
 {
     // Skips if trying to update the same status
+    
     if (_keyboardStatus == status) {
         return NO;
     }
@@ -606,7 +612,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (self.isExternalKeyboardDetected || self.isKeyboardUndocked) {
         return YES;
     }
-    
     return NO;
 }
 
@@ -1379,9 +1384,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
-    if (status == SLKKeyboardStatusDidHide) {
-        return;
-    }
+//    if (status == SLKKeyboardStatusDidHide) {
+//        return;
+//    }
     
     // After showing keyboard, check if the current cursor position could diplay autocompletion
     if ([self.textView isFirstResponder] && status == SLKKeyboardStatusDidShow && !self.isAutoCompleting) {
@@ -1987,7 +1992,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[typingIndicatorView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textInputbar]|" options:0 metrics:nil views:views]];
-    
     self.scrollViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.scrollViewProxy secondItem:nil];
     self.autoCompletionViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.autoCompletionView secondItem:nil];
     self.typingIndicatorViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.typingIndicatorProxyView secondItem:nil];
@@ -2000,6 +2004,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (self.textInputbar.isEditing) {
         self.textInputbarHC.constant += self.textInputbar.editorContentViewHeight;
     }
+    [self.view layoutIfNeeded];
 }
 
 

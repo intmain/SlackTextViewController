@@ -82,7 +82,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     self.charCountLabelWarningColor = [UIColor redColor];
     
     self.autoHideRightButton = YES;
-    self.editorContentViewHeight = 38.0;
+    self.editorContentViewHeight = 44.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
     
     [self addSubview:self.editorContentView];
