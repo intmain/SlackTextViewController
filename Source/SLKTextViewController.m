@@ -591,10 +591,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     // Forces the keyboard status when didHide to avoid any inconsistency.
-    if (status == SLKKeyboardStatusDidHide) {
-        _keyboardStatus = status;
-        return YES;
-    }
+//    if (status == SLKKeyboardStatusDidHide) {
+//        _keyboardStatus = status;
+//        return YES;
+//    }
     
     // Skips illogical conditions
     if ([self slk_isIllogicalKeyboardStatus:status]) {
@@ -1436,14 +1436,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
-
-//    if (status == SLKKeyboardStatusDidHide) {
-//        return;
-//    }
     // Skips if it's the current status
-//    if (self.keyboardStatus == status) {
-//        return;
-//    }
+    if (self.keyboardStatus == status) {
+        return;
+    }
     
     // Updates and notifies about the keyboard status update
     if ([self slk_updateKeyboardStatus:status]) {
