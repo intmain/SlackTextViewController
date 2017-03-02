@@ -322,6 +322,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         _textInputbar.translatesAutoresizingMaskIntoConstraints = NO;
         
         [_textInputbar.leftButton addTarget:self action:@selector(didPressLeftButton:) forControlEvents:UIControlEventTouchUpInside];
+        [_textInputbar.emoticonButton addTarget:self action:@selector(didPressEmoticonButton:) forControlEvents:UIControlEventTouchUpInside];
         [_textInputbar.rightButton addTarget:self action:@selector(didPressRightButton:) forControlEvents:UIControlEventTouchUpInside];
         [_textInputbar.editorLeftButton addTarget:self action:@selector(didCancelTextEditing:) forControlEvents:UIControlEventTouchUpInside];
         [_textInputbar.editorRightButton addTarget:self action:@selector(didCommitTextEditing:) forControlEvents:UIControlEventTouchUpInside];
@@ -381,6 +382,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (UIButton *)rightButton
 {
     return _textInputbar.rightButton;
+}
+
+- (UIButton *)emoticonButton {
+    return _textInputbar.emoticonButton;
 }
 
 - (UIModalPresentationStyle)modalPresentationStyle
@@ -744,6 +749,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)didPressLeftButton:(id)sender
 {
     // No implementation here. Meant to be overriden in subclass.
+}
+
+- (void)didPressEmoticonButton:(id) sender {
+    
 }
 
 - (void)didPressRightButton:(id)sender

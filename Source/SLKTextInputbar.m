@@ -29,6 +29,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 @property (nonatomic, strong) NSLayoutConstraint *leftButtonWC;
 @property (nonatomic, strong) NSLayoutConstraint *leftButtonHC;
+@property (nonatomic, strong) NSLayoutConstraint *emoticonButtonWC;
+@property (nonatomic, strong) NSLayoutConstraint *emoticonButtonHC;
 @property (nonatomic, strong) NSLayoutConstraint *leftMarginWC;
 @property (nonatomic, strong) NSLayoutConstraint *bottomMarginWC;
 @property (nonatomic, strong) NSLayoutConstraint *rightButtonWC;
@@ -36,6 +38,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic, strong) NSLayoutConstraint *rightButtonTopMarginC;
 @property (nonatomic, strong) NSLayoutConstraint *rightButtonBottomMarginC;
 @property (nonatomic, strong) NSLayoutConstraint *editorContentViewHC;
+@property (nonatomic, strong) NSLayoutConstraint *emoticonBottomMarginWC;
 @property (nonatomic, strong) NSArray *charCountLabelVCs;
 
 @property (nonatomic, strong) UILabel *charCountLabel;
@@ -92,6 +95,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addSubview:self.rightButton];
     [self addSubview:self.textView];
     [self addSubview:self.charCountLabel];
+    [self addSubview:self.emoticonButton];
     
     [self slk_setupViewConstraints];
     [self slk_updateConstraintConstants];
@@ -175,6 +179,15 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         _leftButton.titleLabel.font = [UIFont systemFontOfSize:15.0];
     }
     return _leftButton;
+}
+
+- (UIButton *)emoticonButton {
+    if (!_emoticonButton) {
+        _emoticonButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _emoticonButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _emoticonButton.titleLabel.font = [UIFont systemFontOfSize:15.0];
+    }
+    return _emoticonButton;
 }
 
 - (UIButton *)rightButton
@@ -606,7 +619,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
                             @"leftButton": self.leftButton,
                             @"rightButton": self.rightButton,
                             @"contentView": self.editorContentView,
-                            @"charCountLabel": self.charCountLabel
+                            @"charCountLabel": self.charCountLabel,
+                            @"emoticonButton": self.emoticonButton
                             };
     
     NSDictionary *metrics = @{@"top" : @(self.contentInset.top),
@@ -615,8 +629,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
                               @"right" : @(self.contentInset.right),
                               };
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(0)]-(<=left)-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(0)]-(<=left)-[emoticonButton(0)]-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[emoticonButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[rightButton]-(<=0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[contentView(0)]-(<=top)-[textView(0@999)]-(bottom)-|" options:0 metrics:metrics views:views]];
@@ -626,6 +641,10 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     
     self.leftButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.leftButton secondItem:nil];
     self.leftButtonHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.leftButton secondItem:nil];
+    
+    self.emoticonButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.emoticonButton secondItem:nil];
+    self.emoticonButtonHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.emoticonButton secondItem:nil];
+    self.emoticonBottomMarginWC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.emoticonButton];
     
     self.leftMarginWC = [self slk_constraintsForAttribute:NSLayoutAttributeLeading][0];
     self.bottomMarginWC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.leftButton];
@@ -650,6 +669,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         self.bottomMarginWC.constant = zero;
         self.rightButtonWC.constant = zero;
         self.rightMarginWC.constant = zero;
+        self.emoticonButtonHC.constant = zero;
+        self.emoticonButtonWC.constant = zero;
     }
     else {
         self.editorContentViewHC.constant = zero;
@@ -663,6 +684,15 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         
         self.leftButtonWC.constant = roundf(leftButtonSize.width);
         self.leftMarginWC.constant = (leftButtonSize.width > 0) ? self.contentInset.left : zero;
+        
+        CGSize emoticonButtonSize = [self.emoticonButton imageForState:self.emoticonButton.state].size;
+        
+        if (emoticonButtonSize.width > 0) {
+            self.emoticonButtonHC.constant = roundf(emoticonButtonSize.height);
+            self.emoticonBottomMarginWC.constant = roundf((self.intrinsicContentSize.height - emoticonButtonSize.height) / 2.0);
+        }
+        self.emoticonButtonWC.constant = roundf(emoticonButtonSize.width);
+        
         
         self.rightButtonWC.constant = [self slk_appropriateRightButtonWidth];
         self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];

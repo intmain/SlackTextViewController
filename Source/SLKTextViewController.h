@@ -124,6 +124,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 @property (nonatomic, readonly) SLKTextView *textView;
 @property (nonatomic, readonly) UIButton *leftButton;
 @property (nonatomic, readonly) UIButton *rightButton;
+@property (nonatomic, readonly) UIButton *emoticonButton;
 
 
 #pragma mark - Initialization
@@ -272,6 +273,8 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  
  @param sender The object calling this method.
  */
+- (void)didPressEmoticonButton:(id)sender;
+
 - (void)didPressLeftButton:(id)sender;
 
 /**
